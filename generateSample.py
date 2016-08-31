@@ -8,7 +8,7 @@ def generateData(n=int(1e6), seed=None):
 		n: number of random integers (default = 1e6)
 		seed: the seed of random (default = None (use system time))
 	Return:
-		A list which contains n random integers
+		A numpy array which contains n random integers
 	'''
 	# Set the seed of random
 	np.random.seed(seed)

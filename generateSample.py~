@@ -16,13 +16,13 @@ def generateData(n=int(1e6), seed=None):
 	return np.random.randint(-2**31, 2**31 - 1, size=n)
 
 	
-def writeDataToFile(filename='input.csv', n=int(1e6), seed=None):
+def writeDataToFile(filename='input.txt', n=int(1e6), seed=None):
 	'''	
 	Write n random signed 32-bit integers to file filename
 	'''
 	array = generateData(n=n, seed=seed)
 	
-	np.savetxt(filename, array, delimiter='abc', fmt='%d')
+	np.savetxt(filename, array, delimiter='\n', fmt='%d')
 	
 	
 	
