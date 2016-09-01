@@ -65,4 +65,11 @@ def sort(fileIn='input.txt', fileOut='output.txt', verbose=False):
 	
 	
 if __name__ == '__main__':
-	sort()
+	# Generate data
+	print('Generating data...')
+	from generateSample import writeDataToFile
+	writeDataToFile()
+
+	# Sort array and write to file
+	print('Sorting...')
+	sort(verbose=True)

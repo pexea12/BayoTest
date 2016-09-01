@@ -4,7 +4,8 @@ For the Github repository, please visit: https://github.com/pexea12/BayoTest
 
 ### **Dependencies**
 This project is built by **Python 3.5**, using **Numpy**. Numpy is a very strong library which supports scientific computing. 
-Run `python test.py` to see the result. View `sort.py` to see the implementation of the sort function.
+Run `python sort.py` to see the result. View `sort.py` to see the implementation of the sort function.  
+Run `python test.py` to see the test.  
 
 ### **Input format** (*input.txt*)
 Each line contains a number. For example:
