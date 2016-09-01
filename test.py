@@ -5,10 +5,10 @@ import os
 def createTestCases(n=5, seed=None):
 	'''
 	Create test cases for the sort function
-	1. Generate a sorted array
-	2. Shuffle the array to get a new array
-	3. Sort the new array
-	4. Compare the array in (3) and the array in (1)
+	1. Generate a random array
+	2. Write the random array to folder test
+	3. Sort the random array and write it to folder solution
+	We will compare the sorted array after using sort() in sort.py and the array in (3)
 		If they are the same, test case is passed
 	
 	Params:
