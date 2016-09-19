@@ -6,7 +6,7 @@ def readNum(f, type=int):
 	return type(f.readline().rstrip())
 
 
-def sort(fileIn='input.txt', fileOut='output.txt', verbose=False):
+def sort(fileIn='input.txt', fileOut='output.txt'):
 	'''
 	Sort all the signed 32-bit integers in file filename
 	Return a numpy array which contains all the sorted signed 32-bit integers

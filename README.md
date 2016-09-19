@@ -8,28 +8,33 @@ Run `python sort.py` to see the result. View `sort.py` to see the implementation
 Run `python test.py` to see the test.  
 
 ### **Input format** (*input.txt*)
-Each line contains a number. For example:
+The first line contains the total numbers.  
+After the first line, each line contain a number. For example:
 
+> 4
 > 1  
 > 5  
 > 7  
 > 4  
 
 which means the data is [1, 5, 7, 4].
-In *input.txt*, there are 1 million lines. Each line contains an integer.
+In *input.txt*, there are 1 million lines + 1 first line. Each line contains an integer.
 
 ### **Output format** (*output.txt*)
-Each line contains a number after sorting. For example:
+The first line contains the total numbers.  
+After the first line, each line contains a number after sorting. For example:
 
+> 4
 > 1  
 > 4  
 > 5  
 > 7  
 
 which means the sorted data is [1, 4, 5, 7].
-In *output.txt*, there are 1 million lines. Each line contains an integer.
+In *output.txt*, there are 1 million lines + 1 first line. Each line contains an integer.
 
 ### **generateSample.py**
+If running directly `python generateSample.py`, the program will generate data and write them to file.
 
  1. `generateData(n=int(1e6), seed=None)`
 	* Generate n random signed 32-bit integers (from -2^31 to 2^31 - 1)
@@ -38,23 +43,26 @@ In *output.txt*, there are 1 million lines. Each line contains an integer.
 	**seed**: the seed of random (*default = None (use system time)*)
 	* ***Return:***
 	A numpy array which contains n random integers
- 2. `writeDataToFile(filename='input.txt', n=int(1e6), seed=None)`
+ 2. `writeDataToFile(array, filename='input.txt')`
 	* Write n random signed 32-bit integers to file filename
 	* ***Params***:
+	  **array: ** array to write to the file
 	  **filename: ** name of the file
-	  **n**: number of random integers (*default 1e6*)
     
 ### **sort.py**	
-If running directly python `sort.py`, the program will execute `sort()`
+If running directly `python sort.py`, the program will execute `sort()`
+
+`sort()` will attempt to divide the file into 4 chunks, each chunk contains 250 thousand numbers.  
+Because the total size of 250 thousand numbers is only 1 million bytes (< 3MB), we can load each file into the memory, sort the numbers and write them to the other files.
+After that, all we need to do is merge these files into one by using the simple merging algorithm which is the same as the algorithm using in Merge Sort.  
+
+In fact, the total memory using by `sort()` is about 2.4MB.  
 
  1. `sort(fileIn='input.txt', fileOut='output.txt', verbose=False)`
 	* Sort all the signed 32-bit integers in file filename
 	* ***Params***:
 		**fileIn**: contains unsorted array (*default input.txt*)
 		**fileOut**: contains sorted array (*default output.txt*)
-		**verbose**: (*default False*)
-			if **verbose** is True, log message will be print
-			 (log message about time)
 
 ### **test.py**	
 If running directly python `test.py`, the program will execute `createTestCases(n=5)` and then `testSortFunction()`
