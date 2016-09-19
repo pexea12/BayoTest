@@ -16,15 +16,16 @@ def generateData(n=int(1e6), seed=None):
 	return np.random.randint(-2**31, 2**31 - 1, size=n)
 
 	
-def writeDataToFile(filename='input.txt', n=int(1e6), seed=None):
+def writeDataToFile(array, filename='input.txt'):
 	'''	
-	Write n random signed 32-bit integers to file filename
+	Write array to file filename
 	'''
-	array = generateData(n=n, seed=seed)
+	np.savetxt(filename, array, fmt='%d', delimiter='\n', header=str(len(array)), comments='')
+
+if __name__ == '__main__':
+	array = generateData()
 	
-	np.savetxt(filename, array, delimiter='\n', fmt='%d')
-	
-	
+	writeDataToFile(array)	
 	
 	
 	

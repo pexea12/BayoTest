@@ -1,4 +1,5 @@
-import random
+import numpy as np
+from generateSample import generateData, writeDataToFile
 import shutil
 import os
 
@@ -17,39 +18,28 @@ def createTestCases(n=5, seed=None):
 	'''
 		
 	# Delete folder 'solution' and 'test'
-	shutil.rmtree('solution')
-	shutil.rmtree('test')
-	
-	os.makedirs('solution')
-	os.makedirs('test')
-		
-	# Set random seed
-	random.seed(seed)
+	try:
+		shutil.rmtree('solution')
+		shutil.rmtree('test')
+	finally:
+		os.makedirs('solution')
+		os.makedirs('test')
 	
 	for i in range(n):
 		print('Generate test case %d' % i)
 		
 		# Generate random array
-		array = random.sample(range(-2**31, 2**31 - 1), int(1e6))
+		array = generateData(seed=seed)
 		
 		# Write random array to input file	
-		testFile = open('test/%d.txt' % i,'w')
-		
-		for num in array:
-			testFile.write('%d\n' % num)
-			
-		testFile.close()
+		writeDataToFile(array, filename='test/%d.txt' % i)
 		
 		# Sort random array
 		array.sort()
 		
 		# Write random array to output file
-		solutionFile = open('solution/%d.txt' % i, 'w')
-		
-		for num in array:
-			solutionFile.write('%d\n' % num)
-			
-		solutionFile.close()
+		writeDataToFile(array, filename='solution/%d.txt' % i)
+
 
 from sort import sort
 
@@ -63,9 +53,11 @@ def testSortFunction(sortFunc=sort, verbose=True):
 	'''
 	
 	# Delete all files in folder 'sort', 'test' and 'solution'
-	shutil.rmtree('sort')
+	try:
+		shutil.rmtree('sort')
+	finally:
+		os.makedirs('sort')
 	
-	os.makedirs('sort')
 	
 	# List all the file in test folder
 	testFiles = os.listdir('test')
@@ -88,7 +80,7 @@ def testSortFunction(sortFunc=sort, verbose=True):
 	
 	print('Result: %d/%d' % (count, len(solutionFiles)))
 
-	
+
 if __name__ == '__main__':
 	select = input('Do you want to generate test cases or not? (y/n) ')
 	

@@ -1,5 +1,10 @@
 import numpy as np
-import time
+from generateSample import writeDataToFile
+import os
+
+def readNum(f, type=int):
+	return type(f.readline().rstrip())
+
 
 def sort(fileIn='input.txt', fileOut='output.txt', verbose=False):
 	'''
@@ -16,60 +21,106 @@ def sort(fileIn='input.txt', fileOut='output.txt', verbose=False):
 		sorted array
 	'''
 	
-	# Load array from fileIn
-	if verbose:
-		print('\n\tLoading array from %s...' % fileIn)
+	array = np.array([], dtype=np.int32)
+	totalFiles = 0
 	
-	# Time before loading 	
-	loadTimeStart = time.time()
-	
-	array = np.loadtxt(fileIn, delimiter='/n', dtype=np.int32)
-	
-	# Time after loading
-	loadTimeStop = time.time()
-	
-	if verbose:
-		print('\tLoad time: %.6f' % (loadTimeStop - loadTimeStart))
+	# Divide file into chunks. Read only 250k numbers at one time 
+	margin = 250000
+
+	print('Dividing the file into chunks...')	
+	with open(fileIn, 'r') as fileInput:
+		n = readNum(fileInput)
 		
-	# Sort array
-	if verbose:
-		print('\tSorting array...')
-	
-	# Time before sorting
-	sortTimeStart = time.time()
-	
-	array.sort()
-	
-	# Time after sorting
-	sortTimeStop = time.time()
-	
-	if verbose:
-		print('\tSort time: %.6f' % (sortTimeStop - sortTimeStop))
+		for i in range(n):
+			num = readNum(fileInput)
+			array = np.append(array, num)	
+			
+			if (i + 1) % margin == 0 or i + 1 == n:
+				# Sort array
+				array.sort()
 		
-	# Save sorted array to fileOut
-	if verbose:
-		print('\tSaving sorted array to %s' % fileOut)
+				# Save the chunk to a file
+				fileName = '0' + str(totalFiles)
+				print('Chunk %d' % totalFiles)
+				
+				totalFiles += 1
+				writeDataToFile(array, filename=fileName)
+		
+				# Empty the array
+				array = np.array([], dtype=np.int32)
 	
-	# Time before saving
-	saveTimeStart = time.time()
 	
-	np.savetxt(fileOut, array, delimiter='/', fmt='%d')
+	# Merge the sort arrays
+	print('Merging...')
+	stage = 0
 	
-	# Time after saving
-	saveTimeStop = time.time()
+	while totalFiles > 1:
+		i = 0
+		count = 0
+		
+		while i < totalFiles:
+			# open temporary file to merge
+			f1 = open(str(stage) + str(i), 'r')
+			f2 = open(str(stage) + str(i + 1), 'r')
+			
+			with open(str(stage + 1) + str(count), 'w') as f:
+				n1 = readNum(f1)
+				n2 = readNum(f2)
+				
+				j1 = 0
+				j2 = 0
+				
+				f.write('%d\n' % (n1 + n2))
+				
+				num1 = readNum(f1)
+				num2 = readNum(f2)
+			
+				while (j1 < n1 and j2 < n2):
+					try:
+						if num1 < num2:
+							f.write('%d\n' % num1)
+							j1 += 1
+							num1 = readNum(f1)
+						else:
+							f.write('%d\n' % num2)
+							j2 += 1		
+							num2 = readNum(f2)
+					except ValueError:
+						break
+												
+				while (j1 < n1):
+					try:
+						f.write('%d\n' % num1)
+						j1 += 1
+						num1 = readNum(f1)
+					except ValueError:
+						break
+					
+				while (j2 < n2):
+					try:
+						f.write('%d\n' % num2)
+						j2 += 1
+						num2 = readNum(f2)
+					except ValueError:
+						break
+							
+			f1.close()
+			f2.close()
+			
+			# Remove these two files
+			os.remove(str(stage) + str(i))
+			os.remove(str(stage) + str(i + 1))
+			
+			count += 1
+			i += 2
+		
+		stage += 1
+		totalFiles = count
 	
-	if verbose:
-		print('\tSave time: %.6f' % (saveTimeStop - saveTimeStart))
+	os.rename(str(stage) + '0', fileOut)
 	
-	return array
-	
+	print('Done!')
 	
 if __name__ == '__main__':
-	# Generate data
-	print('Generating data...')
-	from generateSample import writeDataToFile
-	writeDataToFile()
-
-	# Sort array and write to file
-	print('Sorting...')
-	sort(verbose=True)
+	sort()
+	
